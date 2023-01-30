@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block css %}
+<link rel="stylesheet" href="../static/style.css">{% endblock %}
+{% block title %}Contact Us{% endblock %}
+{% block content %}
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Issue</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for data in profiles %}
+        <tr>
+            <th scope="row"><a href="/delete/{{data.id}}" type="button">{{data.id}}</a></th>
+            <td>{{data.first_name}} {{data.last_name}}</td>
+            <td>{{data.email}}</td>
+            <td>{{data.issue}}</td>
+        </tr>
+        {% endfor%}
+    </tbody>
+</table>
+{% endblock %}
