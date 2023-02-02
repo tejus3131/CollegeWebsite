@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block css %}
+<link rel="stylesheet" href="../static/style.css">{% endblock %}
+{% block title %}Contact Us{% endblock %}
+{% block content %}
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Password</th>
+            <th scope="col">Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for data in profiles %}
+        <tr>
+            <th scope="row"><a href="/delete_user/{{data.id}}">{{data.id}}</a></th>
+            <td>{{data.first_name}} {{data.last_name}}</td>
+            <td>{{data.email}}</td>
+            <td>{{data.password}}</td>
+            <td>{% if data.status %}<a type="button" href="/make_user/{{data.id}}">ADMIN</a>{% else %}<a type="button" href="/make_admin/{{data.id}}">User</a>{% endif %}</td>
+        </tr>
+        {% endfor%}
+    </tbody>
+</table>
+{% endblock %}

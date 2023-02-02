@@ -24,9 +24,10 @@ class User(db.Model):
     last_name = db.Column(db.String(20), unique=False, nullable=False)
     email = db.Column(db.String(50), unique=False, nullable=False)
     password = db.Column(db.String(500), unique=False, nullable=False)
+    status = db.Column(db.Integer, unique=False, nullable=False)
 
     def __repr__(self):
-        return f"first_name : {self.first_name}, last_name : {self.first_name}, email : {self.email}, password: {self.password}"
+        return f"first_name : {self.first_name}, last_name : {self.first_name}, email : {self.email}, password: {self.password}, status: {self.status}"
 
 
 @app.route("/")
@@ -36,21 +37,24 @@ def index():
     else:
         return render_template("index.html")
 
+
 @app.route("/login_page")
 def login_page():
     return render_template("login.html")
+
 
 @app.route("/sign_up")
 def sign_up():
     return render_template("sign_up.html")
 
+
 @app.route('/login', methods=['POST'])
 def do_admin_login():
-    password = request.form['password'] 
+    password = request.form['password']
     email = request.form['email']
-    user = User.query.filter_by(email = email).first()
+    user = User.query.filter_by(email=email).first()
     if user is not None:
-        if user.password==password:
+        if user.password == password:
             session['logged_in'] = True
             return index()
         else:
@@ -58,6 +62,7 @@ def do_admin_login():
             return redirect('/login_page')
     else:
         return redirect("/sign_up")
+
 
 @app.route("/contact_us")
 def contact_us():
@@ -91,7 +96,7 @@ def add_user():
         return redirect('/sign_up')
     else:
         user_query = User(first_name=first, last_name=last,
-                          email=useremail, password=userpassword)
+                          email=useremail, password=userpassword, status=0)
         db.session.add(user_query)
         db.session.commit()
         return redirect('/login_page')
@@ -102,6 +107,11 @@ def issue():
     profiles = Issue.query.all()
     return render_template('issue.html', profiles=profiles)
 
+@app.route('/users')
+def userinfo():
+    profiles = User.query.all()
+    return render_template('users.html', profiles=profiles)
+
 
 @app.route('/delete/<int:id>')
 def erase(id):
@@ -110,10 +120,33 @@ def erase(id):
     db.session.commit()
     return redirect('/issue')
 
+@app.route('/delete_user/<int:id>')
+def erase_user(id):
+    data = User.query.get(id)
+    db.session.delete(data)
+    db.session.commit()
+    return redirect('/users')
+
+@app.route('/make_user/<int:id>')
+def make_user(id):
+    data = User.query.get(id)
+    data.status = 0
+    db.session.commit()
+    return redirect("/users")
+
+@app.route('/make_admin/<int:id>')
+def make_admin(id):
+    data = User.query.get(id)
+    data.status = 1
+    db.session.commit()
+    return redirect("/users")
+
+
 @app.route("/logout")
 def logout():
     session['logged_in'] = False
     return redirect('/')
+
 
 if __name__ == "__main__":
     app.secret_key = "123546798"
