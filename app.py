@@ -33,7 +33,7 @@ class User(db.Model):
 @app.route("/")
 def index():
     if session.get('logged_in'):
-        return render_template("index.html", status=True)
+        return render_template("index.html", status=True, )
     else:
         return render_template("index.html")
 
